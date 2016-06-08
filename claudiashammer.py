@@ -1,5 +1,7 @@
 #!/usr/bin/env python2
 
+# Note: Requires the socks module, excluded unlike in normal Torshammer (as you can get newer versions).
+
 import argparse
 import os
 import re
