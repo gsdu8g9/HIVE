@@ -115,6 +115,8 @@ def main(target, threads, port, tor, sport=9050):
     print term.RED + " * Give 20 seconds without tor or 40 with before checking site" + term.NORMAL
     print term.RED + " */" + term.DOWN + term.DOWN + term.NORMAL
 
+    global stop_now
+    stop_now = False
     global socksport
     socksport = sport
 
