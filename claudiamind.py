@@ -50,12 +50,12 @@ class hammer(threading.Thread):
 print(bcolors.OKBLUE + art + bcolors.ENDC)
 time.sleep(1)
 
-version = "0.1.0"
+version = "0.1.1"
 
 print(bcolors.HEADER + "~~ Built up on TorBot. Special thanks to Leet for this awesome code which is so easy to work with. <33333" + bcolors.ENDC)
 print(bcolors.OKBLUE + "v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND" + bcolors.ENDC)
 
-sport = raw_input("SOCKS5 port (def. 9050): ")
+sport = int(raw_input("SOCKS5 port (def. 9050): "))
 if sport == "":
     sport = 9050
 
