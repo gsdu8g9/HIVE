@@ -15,7 +15,6 @@ import threading
 import os
 import string
 from Queue import Queue
-from bs4 import BeautifulSoup
 
 # Aesthetics
 
