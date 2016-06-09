@@ -24,3 +24,6 @@ Simply: If you're running Windows, start the Tor browser and type 9150 into the 
 The script compares your IP to the Tor IP to make sure you're using Tor, and then sends me or any OP who requested it your **TOR IP**, only for statistical purposes and easier bugfixing. **Again, don't worry, that is not your real IP address.**.
 
 It also sends me the version of your script, so I can tell some people to update it, etc.
+
+# Tor routing
+The *claudiashammer* module will say "Tor: False" - the module is indeed run without Tor, **but** this is because *claudiamind.py* already routes all of its traffic through Tor, including its modules' traffic. So even though *claudiashammer* says "Tor: False", it all goes through Tor.
