@@ -6,13 +6,9 @@ import socks
 import socket
 import ssl
 import time
-import requests
-import lxml
-import subprocess
 import random
 import thread
 import threading
-import os
 import string
 from Queue import Queue
 
