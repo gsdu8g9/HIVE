@@ -55,9 +55,11 @@ version = "0.1.1"
 print(bcolors.HEADER + "~~ Built up on TorBot. Special thanks to Leet for this awesome code which is so easy to work with. <33333" + bcolors.ENDC)
 print(bcolors.OKBLUE + "v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND" + bcolors.ENDC)
 
-sport = int(raw_input("SOCKS5 port (def. 9050): "))
+sport = raw_input("SOCKS5 port (def. 9050): ")
 if sport == "":
     sport = 9050
+else:
+    sport = int(sport)
 
 native_ip = "0"
 
