@@ -183,7 +183,7 @@ while 1:
     
 
 
-    print "recvd: " + recvd
+    #print "recvd: " + recvd - the user doesn't need to see this, it's ugly
     #print "<%r> %r" % (senderuser, sentmessage)
     print bcolors.OKBLUE + "<" + senderuser + "> " + bcolors.ENDC + sentmessage 
     if "PING :" in recvd:
