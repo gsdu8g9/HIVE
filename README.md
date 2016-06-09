@@ -27,3 +27,18 @@ It also sends me the version of your script, so I can tell some people to update
 
 # Tor routing
 The *claudiashammer* module will say "Tor: False" - the module is indeed run without Tor, **but** this is because *claudiamind.py* already routes all of its traffic through Tor, including its modules' traffic. So even though *claudiashammer* says "Tor: False", it all goes through Tor.
+
+# Using the program on multiple ports
+Assuming you're in the ClaudiaMIND directory, just do this:
+```
+$ chmod +x claudia*
+$ cd tor
+$ chmod +x generate.py
+$ ./generate.py
+```
+Now enter the amount of Tor ports you want
+```
+$ chmod +x torstart.sh
+$ ./torstart.sh
+```
+Now, leave this window open and in another one, run claudiamind with one of the printed ports.
