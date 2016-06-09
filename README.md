@@ -7,6 +7,8 @@ Requires socks.
 or
 ```sudo pip install PySocks```
 
+For Windows, download [socks.py](https://raw.githubusercontent.com/Anorov/PySocks/master/socks.py) from the [PySocks repository](https://github.com/Anorov/PySocks).
+
 # Getting the program & updating
 * Getting the program: ```git clone https://github.com/ClaudiaDAnon/ClaudiaMIND.git```
 * Updating the program: Make sure you're in the ClaudiaMIND directory, then ```git pull```
