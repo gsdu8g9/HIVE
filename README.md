@@ -6,6 +6,10 @@ Requires socks.
 or
 ```sudo pip install PySocks```
 
+# Getting the program & updating
+* Getting the program: ```git clone https://github.com/ClaudiaDAnon/ClaudiaMIND.git```
+* Updating the program: Make sure you're in the ClaudiaMIND directory, then ```git pull```
+
 # Usage
 
 ```$ python claudiamind.py```
