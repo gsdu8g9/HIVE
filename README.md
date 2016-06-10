@@ -52,3 +52,6 @@ $ chmod +x torstart.sh
 $ ./torstart.sh
 ```
 Now, leave this window open and in another one, run claudiamind with one of the printed ports. (Obviously all of the ports. Ideally like 4 clients on the same port)
+
+# Known issues
+* Nicknames can't be in upper case
