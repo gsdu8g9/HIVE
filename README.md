@@ -23,6 +23,13 @@ Simply: If you're running Windows, start the Tor browser and type 9150 into the 
 **Alternatively, you can use the Tor browser port (9150) on Linux too.**
 *Protip: On Linux, you can run both the Tor browser and the service.*
 
+# Argparse
+You can also use -p for specifying the socks5 port.
+```
+$ ./claudiamind.py -h
+$ ./claudiamind.py -p 9050
+```
+
 # Reporting policy
 The script compares your IP to the Tor IP to make sure you're using Tor, and then sends me or any OP who requested it your **TOR IP**, only for statistical purposes and easier bugfixing. **Again, don't worry, that is not your real IP address.**.
 
