@@ -108,7 +108,7 @@ nickname = "" # SET THIS VALUE TO YOUR NICKNAME
 if nickname ==  "":
     nickname = "faggot" + str(int(random.random() * 1000))
 else:
-    nickname == nickname + str(int(random.random() * 1000))
+    nickname = nickname + str(int(random.random() * 1000))
 print("If you want a better nickname than " + bcolors.FAIL + nickname + bcolors.ENDC + ", then set it inside the file.")
 username = nickname
 realname = nickname
