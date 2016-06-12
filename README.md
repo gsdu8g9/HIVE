@@ -1,5 +1,6 @@
 # ClaudiaMIND
 IRC hivemind DDoS tool
+
 Basically a tool using which many people can attack a target specified using an IRC command.
 
 Requires socks.
