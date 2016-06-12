@@ -69,4 +69,4 @@ Now, leave this window open and in another one, run claudiamind with one of the 
 
 # Credits
 * ClaudiaD
-* Taerr - Locales base, Windows support
+* Taerr - Locales base, Czech locale base, Windows support
