@@ -76,7 +76,7 @@ class hammer(threading.Thread):
 okblue(art)
 time.sleep(1)
 
-version = "0.1.6"
+version = "0.1.7"
 
 print(bcolors.HEADER + "~~ Built up on TorBot. Special thanks to Leet for this awesome code which is so easy to work with. <33333" + bcolors.ENDC)
 okblue("v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND")
@@ -133,6 +133,8 @@ admins = config["admins"]
 
 minthreads = config["minthreads"]
 maxthreads = config["maxthreads"]
+
+ping = config["ping"]
 
 channel = config["channel"]
 
@@ -277,6 +279,7 @@ while 1:
                 message("Incorrect !command format.")
                 print(e)
         if "!ping" in sentmessage:
+            if ping == True:
                 pingdata = sentmessage.replace("!ping ", "")
                 try:
                     response = os.system("ping -c 1 " + pingdata)
