@@ -1,7 +1,13 @@
 # ClaudiaMIND
-IRC hivemind DDoS tool
+
+### IRC hivemind DDoS tool
 
 Basically a tool using which many people can attack a target specified using an IRC command.
+
+# Disclaimer
+**This tool is released for educational purposes only and comes with no warranty at all.**
+
+**You may not use this software for any illegal or unethical purpose.**
 
 # Getting the program & updating
 * Getting the program: ```git clone https://github.com/ClaudiaDAnon/ClaudiaMIND.git```
