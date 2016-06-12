@@ -3,16 +3,17 @@ IRC hivemind DDoS tool
 
 Basically a tool using which many people can attack a target specified using an IRC command.
 
-Requires socks.
-```sudo apt-get install python-socksipy```
-or
-```sudo pip install PySocks```
-
-For Windows, download [socks.py](https://raw.githubusercontent.com/Anorov/PySocks/master/socks.py) from the [PySocks repository](https://github.com/Anorov/PySocks), or use Windows pip.
-
 # Getting the program & updating
 * Getting the program: ```git clone https://github.com/ClaudiaDAnon/ClaudiaMIND.git```
 * Updating the program: Make sure you're in the ClaudiaMIND directory, then ```git pull```
+
+# Configuration
+You can set your language in the configuration.conf file (ISO 639-1), as well as the minimum and maximum threads you want to attack using, whether you want to ping whenever the !ping command is received (default False, !ping doesn't run within Tor), and your native_ip to make the process of comparing it to your Tor IP shorter.
+
+# Languages
+These languages are currently supported:
+* en
+* cs
 
 # Usage
 
@@ -25,7 +26,7 @@ Simply: If you're running Windows, start the Tor browser and type 9150 into the 
 *Protip: On Linux, you can run both the Tor browser and the service.*
 
 # Argparse
-You can also use -p for specifying the socks5 port.
+You can also use -p for specifying the socks5 port. And -v for displaying the version.
 ```
 $ ./claudiamind.py -h
 $ ./claudiamind.py -p 9050
