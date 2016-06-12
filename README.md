@@ -63,3 +63,7 @@ Now, leave this window open and in another one, run claudiamind with one of the 
 
 # Known issues
 * Some nicknames cause problems with connecting
+
+# Credits
+* ClaudiaD
+* Taerr - Locales base, Windows support
