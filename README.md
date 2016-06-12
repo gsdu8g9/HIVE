@@ -1,6 +1,7 @@
 # ClaudiaMIND
 
-### IRC hivemind DDoS tool
+## IRC hivemind DDoS tool
+### Version 0.2.0
 
 Basically a tool using which many people can attack a target specified using an IRC command.
 
@@ -20,6 +21,8 @@ You can set your language in the configuration.conf file (ISO 639-1), as well as
 These languages are currently supported:
 * en
 * cs
+* ls (lolspeak)
+* 15 (1337speak)
 
 # Usage
 
