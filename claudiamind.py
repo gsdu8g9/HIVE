@@ -1,7 +1,14 @@
 #!/usr/bin/env python2
+
+import platform
 import re
 import claudiashammer
-import requests
+
+if(platform.system()=="Windows"): # Requests doesn't work on Windows
+    import urllib2
+else:
+    import requests
+
 import argparse
 import socks
 import socket
@@ -16,15 +23,27 @@ from Queue import Queue
 
 # Aesthetics
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+if(platform.system()=="Windows"): # Colors doesn't work on Windows
+    class bcolors:
+        HEADER = ''
+        OKBLUE = ''
+        OKGREEN = ''
+        WARNING = ''
+        FAIL = ''
+        ENDC = ''
+        BOLD = ''
+        UNDERLINE = ''
+else:
+    class bcolors:
+        HEADER = '\033[95m'
+        OKBLUE = '\033[94m'
+        OKGREEN = '\033[92m'
+        WARNING = '\033[93m'
+        FAIL = '\033[91m'
+        ENDC = '\033[0m'
+        BOLD = '\033[1m'
+        UNDERLINE = '\033[4m'
+
 
 art = """
   ____ _                 _ _       __  __ ___ _   _ ____  
@@ -76,34 +95,46 @@ class hammer(threading.Thread):
 okblue(art)
 time.sleep(1)
 
-version = "0.1.7"
+version = "0.1.8"
 
 print(bcolors.HEADER + "~~ Built up on TorBot. Special thanks to Leet for this awesome code which is so easy to work with. <33333" + bcolors.ENDC)
 okblue("v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND")
 
-sport = args.port if args.port else raw_input("SOCKS5 port (def. 9050): ")
+if(platform.system()=="Windows"):
+    sport = args.port if args.port else raw_input("SOCKS5 port (def. 9150): ")
+else:
+    sport = args.port if args.port else raw_input("SOCKS5 port (def. 9050): ")
+
 if sport == "":
     sport = 9050
+    if(platform.system()=="Windows"):
+        sport = 9150
 else:
     sport = int(sport)
+
 
 native_ip = "0"
 
 if native_ip == "0":
     warning("You might want to set your native IP inside the file in order to make this process shorter.")
     time.sleep(2)
-    native_ip = requests.get("http://canihazip.com/s").text
+    if(platform.system()=="Windows"):
+        native_ip = str(urllib2.urlopen("http://canihazip.com/s").read())
+    else:
+        native_ip = requests.get("http://canihazip.com/s").text
 
 print("Your native IP: " + native_ip)
-
 
 # Tor
 socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", sport, True)
 socket.socket = socks.socksocket
 s = socks.socksocket()
 
+if(platform.system()=="Windows"):
+    IP = str(urllib2.urlopen("http://canihazip.com/s").read())
+else:
+    IP = requests.get("http://canihazip.com/s").text
 
-IP = requests.get("http://canihazip.com/s").text
 if IP == native_ip:
     IP = 0
     fail("Detected IP leaks.")
@@ -163,6 +194,7 @@ def message(msg):
 # Private-Messaging
 def privmessage(user2, msg):
     s.send(":source PRIVMSG " + user2 + " :" + msg + "\r\n")
+    print(bcolors.OKGREEN + nickname+" (you) --> " + user2 + ": " + bcolors.ENDC + msg)
 
     
 # Wait for ping from server
