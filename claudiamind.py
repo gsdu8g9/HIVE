@@ -76,7 +76,7 @@ class hammer(threading.Thread):
 okblue(art)
 time.sleep(1)
 
-version = "0.1.5"
+version = "0.1.6"
 
 print(bcolors.HEADER + "~~ Built up on TorBot. Special thanks to Leet for this awesome code which is so easy to work with. <33333" + bcolors.ENDC)
 okblue("v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND")
@@ -92,7 +92,7 @@ native_ip = "0"
 if native_ip == "0":
     warning("You might want to set your native IP inside the file in order to make this process shorter.")
     time.sleep(2)
-native_ip = requests.get("http://canihazip.com/s").text
+    native_ip = requests.get("http://canihazip.com/s").text
 
 print("Your native IP: " + native_ip)
 
