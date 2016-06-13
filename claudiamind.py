@@ -10,6 +10,7 @@ else:
     import requests
 
 import argparse
+import getpass
 import socks
 import socket
 import ssl
@@ -92,7 +93,7 @@ except Exception as e:
 
 # Version
 
-version = "0.1.9"
+version = "0.2.1"
 
 # Argparse
 
@@ -362,3 +363,12 @@ while 1:
             port = None
         if ("ACTION pets "+nickname in sentmessage) or ("ACTION pets *" in sentmessage):
             message("purr")
+        if sentmessage == "!reload":
+            if (socksport == 9050):
+                if getpass.getuser() != "root":
+                    message("Not root")
+                else:
+                    os.system("service tor reload")
+                    message("Reloading ...")
+            else:
+                message("Not running :9050")
