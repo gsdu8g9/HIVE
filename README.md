@@ -1,7 +1,7 @@
 # ClaudiaMIND
 
 ## IRC hivemind DDoS tool
-### Version 0.2.0
+### Version 0.2.1
 
 Basically a tool using which many people can attack a target specified using an IRC command.
 
