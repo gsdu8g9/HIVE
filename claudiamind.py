@@ -188,9 +188,9 @@ native_ip = config["native_ip"]
 
 def getip():
     if platform.system() == "Windows":
-        ip = str(urllib2.urlopen("http://canihazip.com/s").read())
+        ip = str(urllib2.urlopen("http://icanhazip.com").read()).strip("\r").strip("\n")
     else:
-        ip = requests.get("http://canihazip.com/s").text
+        ip = requests.get("http://icanhazip.com").text.strip("\r").strip("\n")
     return ip
 
 if native_ip == "0":
@@ -343,8 +343,6 @@ while 1:
     senderuser = senderuser[0].split("!")
     senderuser = senderuser[0].strip(":")
     
-    destination = string.split(recvd)[2:][0]
-
     #print "recvd: " + recvd
     #print "<%r> %r" % (senderuser, sentmessage)
     if nickname in sentmessage:
@@ -354,19 +352,24 @@ while 1:
     if "PING :" in recvd:
         recvd = recvd.strip("PING :")
         pong = "PONG : " + recvd
-        s.send(pong)       
+        s.send(pong) 
+    else:
+        destination = string.split(recvd)[2:][0]
         
     #check for commands only authorized people can give
 
     if destination == channel:
         
-        if (senderuser == botmaster) or (senderuser == masterbot) or (senderuser in admins):
-            auth = senderuser
-            allowed = 1
-        elif free_for_all == 1:
-            allowed = 1
-        else:
-            allowed = 0
+        # if (senderuser == botmaster) or (senderuser == masterbot) or (senderuser in admins):
+        #     auth = senderuser
+        #     allowed = 1
+        # elif free_for_all == 1:
+        #     allowed = 1
+        # else:
+        #     allowed = 0
+
+        auth = senderuser
+        allowed = 1
                 
          
         # execute any commands detected from authorised people
