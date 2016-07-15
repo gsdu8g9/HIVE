@@ -46,7 +46,7 @@ $ ./hive.py -p 9050
 ```
 
 ## Reporting policy
-The script compares your IP to the Tor IP to make sure you're using Tor, and then sends me or any OP who requested it your **TOR IP**, only for statistical purposes and easier bugfixing. **Again, don't worry, that is not your real IP address.**.
+The script compares your IP to the Tor IP to make sure you're using Tor, and then sends the OP who requested it your **TOR IP**, only for statistical purposes and easier bugfixing. **Again, don't worry, that is not your real IP address.**.
 
 It also sends me the version of your script, so I can tell some people to update it, etc.
 
