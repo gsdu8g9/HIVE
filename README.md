@@ -1,4 +1,4 @@
-# ClaudiaMIND
+# HIVE
 
 ## IRC hivemind DDoS tool
 ### Version 0.2.5
@@ -11,8 +11,8 @@ Basically a tool using which many people can attack a target specified using an 
 **You may not use this software for any illegal or unethical purpose.**
 
 ## Getting the program & updating
-* Getting the program: ```git clone https://github.com/ClaudiaDAnon/ClaudiaMIND.git```
-* Updating the program: Make sure you're in the ClaudiaMIND directory, then ```git pull```
+* Getting the program: ```git clone https://github.com/ClaudiaDAnon/HIVE.git```
+* Updating the program: Make sure you're in the HIVE directory, then ```git pull```
 
 ## Configuration
 You can set your language in the configuration.conf file (ISO 639-1), as well as the minimum and maximum threads you want to attack using, whether you want to ping whenever the !ping command is received (default False, !ping doesn't run within Tor), and your native_ip to make the process of comparing it to your Tor IP shorter.
@@ -26,7 +26,7 @@ These languages are currently supported:
 
 ## Usage
 
-```$ python claudiamind.py```
+```$ python hive.py```
 
 Port: 9050 for the ```service tor``` and 9150 for the Tor browser (and therefore works on Windows)
 
@@ -35,14 +35,14 @@ Simply: If you're running Windows, start the Tor browser and type 9150 into the 
 *Protip: On Linux, you can run both the Tor browser and the service.*
 
 ## Tools
-ClaudiaMIND currently supports the following DoS tools:
+HIVE currently supports the following DoS tools:
 * Torshammer
 
 ## Argparse
 You can also use -p for specifying the socks5 port. And -v for displaying the version.
 ```
-$ ./claudiamind.py -h
-$ ./claudiamind.py -p 9050
+$ ./hive.py -h
+$ ./hive.py -p 9050
 ```
 
 ## Reporting policy
@@ -51,12 +51,12 @@ The script compares your IP to the Tor IP to make sure you're using Tor, and the
 It also sends me the version of your script, so I can tell some people to update it, etc.
 
 ## Tor routing
-The *claudiashammer* module will say "Tor: False" - the module is indeed run without Tor, **but** this is because *claudiamind.py* already routes all of its traffic through Tor, including its modules' traffic. So even though *claudiashammer* says "Tor: False", it all goes through Tor.
+The *hammer* module will say "Tor: False" - the module is indeed run without Tor, **but** this is because *hive.py* already routes all of its traffic through Tor, including its modules' traffic. So even though *hammer* says "Tor: False", it all goes through Tor.
 
 ## Using the program on multiple ports
-Assuming you're in the ClaudiaMIND directory, just do this:
+Assuming you're in the HIVE directory, just do this:
 ```
-$ chmod +x claudia*
+$ chmod +x hive.py
 $ cd tor
 $ chmod +x generate.py
 $ ./generate.py
@@ -66,7 +66,7 @@ Now enter the amount of Tor ports you want
 $ chmod +x torstart.sh
 $ ./torstart.sh
 ```
-Now, leave this window open and in another one, run claudiamind with one of the printed ports. (Obviously all of the ports. Ideally like 4 clients on the same port)
+Now, leave this window open and in another one, run HIVE with one of the printed ports. (Obviously all of the ports. Ideally like 4 clients on the same port)
 
 ## Known issues
 * Some nicknames cause problems with connecting
