@@ -1,7 +1,5 @@
 #!/usr/bin/env python2
 
-# Note: Requires the socks module, excluded unlike in normal Torshammer (as you can get newer versions).
-
 import argparse
 import os
 import re
@@ -137,10 +135,10 @@ def main(target, threads, port, tor, sport=9050):
 
 
     print "\n/*"
-    print " *"+term.RED + " Claudia's Hammer "+term.NORMAL
+    print " *"+term.RED + "HIVE Hammer "+term.NORMAL
     print " * Slow POST DoS Testing Tool"
     print " * Tor's Hammer: entropy [at] phiral.net"
-    print " * Claudia's Hammer: ClaudiaD <anonops.com>"
+    print " * HIVE Hammer: ClaudiaD <anonops.com>"
     print " * Anon-ymized via Tor"
     print " * We are Legion."
     print " */\n"
