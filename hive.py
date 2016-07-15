@@ -3,7 +3,7 @@
 from urllib2 import urlopen
 import platform
 import re
-import hammerc
+import hammer
 import argparse
 import getpass
 import socks
