@@ -357,10 +357,10 @@ while 1:
     
     #check for commands only authorized people can give
 
-    if (destination == channel) or (sentmessage[:13] == "hive :"):
+    if (destination == channel) or (sentmessage[:len(channel[1:])+2] == channel[1:]+" :"):
 
-        if sentmessage[:13] == "hive :":
-            sentmessage = sentmessage.replace("hive :", "")
+        if sentmessage[:len(channel[1:])+2] == channel[1:]+" :":
+            sentmessage = sentmessage.replace(channel[1:]+" :", "")
 
         if nickname in sentmessage:
             print bcolors.OKGREEN + "<" + senderuser + "> " + sentmessage + bcolors.ENDC 
