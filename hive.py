@@ -29,7 +29,7 @@ Windows = isWindows()
 
 # Classes & Threading
 
-class hammer(threading.Thread):
+class Hammer(threading.Thread):
     def run(self):
         if (tor == True) and (torattack == True):
             hammer.main(target, int(threads), int(port), False)
@@ -393,8 +393,8 @@ while 1:
                                     threads = maxthreads
                                     message("Going with maximum threads (" + str(threads) + ")")
                                 port = int(port)
-                                attack_hammer = hammer()
-                                hammer.start(attack_hammer)
+                                attack_hammer = Hammer()
+                                Hammer.start(attack_hammer)
                             else:
                                 message("Denied.")
                     except Exception as e:
