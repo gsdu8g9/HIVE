@@ -74,3 +74,5 @@ Now, leave this window open and in another one, run HIVE with one of the printed
 ## Credits
 * ClaudiaD
 * Taerr - Locales base, Czech locale base, Windows support
+
+(the tool was renamed, as I was initially too lazy to think of a proper name)
